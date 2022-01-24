@@ -2,6 +2,7 @@ package com.callsign.ticketly.service;
 
 import com.callsign.ticketly.constants.DeliveryStatus;
 import com.callsign.ticketly.dto.DeliveryIn;
+import com.callsign.ticketly.dto.DeliveryPatchIn;
 import com.callsign.ticketly.entity.Customer;
 import com.callsign.ticketly.entity.Delivery;
 import com.callsign.ticketly.entity.Restaurant;
@@ -32,7 +33,7 @@ public class DeliveryService {
     private RedisService redisService;
     private int counter = 0;
 
-    public String storeDelivery(DeliveryIn deliveryDto) throws Exception {
+    public Delivery storeDelivery(DeliveryIn deliveryDto) throws Exception {
         Optional<Customer> customerOptional = customerRepository.findById(deliveryDto.getCustomerID());
         if(customerOptional.isEmpty()){
             throw new DataIntegrityViolationException("Invalid customerID");
@@ -53,8 +54,21 @@ public class DeliveryService {
         delivery.setCustomerID(deliveryDto.getCustomerID());
         delivery.setRestaurantID(deliveryDto.getRestaurantID());
         delivery.setDeliveryStatus(DeliveryStatus.received);
-        Delivery responseDelivery = deliveryRepository.save(delivery);
-        return responseDelivery.getId();
+        return deliveryRepository.save(delivery);
+    }
+
+    public Delivery patchDelivery(DeliveryPatchIn deliveryPatchIn) throws Exception {
+        if(deliveryPatchIn.getCurrentDistanceFromDestinationInMetres() <= 0) {
+            throw new IllegalArgumentException("Invalid current distance from destination in metres");
+        }
+        Optional<Delivery> deliveryOptional = deliveryRepository.findById(deliveryPatchIn.getDeliveryID());
+        if(deliveryOptional.isEmpty()) {
+            throw new IllegalArgumentException("Invalid deliveryID");
+        }
+        Delivery delivery = deliveryOptional.get();
+        delivery.setCurrentDistanceFromDestinationInMetres(deliveryPatchIn.getCurrentDistanceFromDestinationInMetres());
+        delivery.setDeliveryStatus(deliveryPatchIn.getDeliveryStatus());
+        return deliveryRepository.save(delivery);
     }
 
 //    @Scheduled(fixedDelay = 1000)

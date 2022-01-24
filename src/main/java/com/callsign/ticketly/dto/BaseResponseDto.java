@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Optional;
+
 @Data
 public class BaseResponseDto<T> {
     private HttpStatus httpStatus;
@@ -16,5 +18,13 @@ public class BaseResponseDto<T> {
         baseResponseDto.message = message;
         baseResponseDto.data = data;
         return new ResponseEntity<>(baseResponseDto, baseResponseDto.httpStatus);
+    }
+
+    public static <T> ResponseEntity<BaseResponseDto<T>> success(String message, Optional<T> data){
+        BaseResponseDto<T> baseResponseDTO = new BaseResponseDto<>();
+        baseResponseDTO.httpStatus = HttpStatus.OK;
+        data.ifPresent(t -> baseResponseDTO.data = t);
+        baseResponseDTO.message = message;
+        return new ResponseEntity<>(baseResponseDTO, baseResponseDTO.httpStatus);
     }
 }
