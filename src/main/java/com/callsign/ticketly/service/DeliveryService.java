@@ -31,7 +31,17 @@ public class DeliveryService {
     private RestaurantRepository restaurantRepository;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    TicketService ticketService;
     private int counter = 0;
+
+    public Delivery getDelivery(String deliveryID) throws Exception {
+        Optional<Delivery> deliveryOptional = deliveryRepository.findById(deliveryID);
+        if(deliveryOptional.isEmpty()) {
+            throw new IllegalArgumentException("Invalid deliveryID");
+        }
+        return deliveryOptional.get();
+    }
 
     public Delivery storeDelivery(DeliveryIn deliveryDto) throws Exception {
         Optional<Customer> customerOptional = customerRepository.findById(deliveryDto.getCustomerID());
@@ -67,8 +77,17 @@ public class DeliveryService {
         }
         Delivery delivery = deliveryOptional.get();
         delivery.setCurrentDistanceFromDestinationInMetres(deliveryPatchIn.getCurrentDistanceFromDestinationInMetres());
-        delivery.setDeliveryStatus(deliveryPatchIn.getDeliveryStatus());
-        return deliveryRepository.save(delivery);
+        boolean hasDeliveryStatusChanged = false;
+        if( deliveryPatchIn.getDeliveryStatus() != null && !delivery.getDeliveryStatus().equals(deliveryPatchIn.getDeliveryStatus())) {
+            hasDeliveryStatusChanged = true;
+            delivery.setDeliveryStatus(deliveryPatchIn.getDeliveryStatus());
+        }
+        delivery = deliveryRepository.save(delivery);
+        DeliveryStatus deliveryStatus = delivery.getDeliveryStatus();
+        if(deliveryStatus == DeliveryStatus.picked || deliveryStatus == DeliveryStatus.preparing) {
+            ticketService.createTicketIfNeededForPreparingAndPickedDeliveryStatus(delivery, hasDeliveryStatusChanged);
+        }
+        return delivery;
     }
 
 //    @Scheduled(fixedDelay = 1000)

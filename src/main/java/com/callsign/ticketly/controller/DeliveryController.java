@@ -5,8 +5,8 @@ import com.callsign.ticketly.dto.DeliveryIn;
 import com.callsign.ticketly.dto.DeliveryPatchIn;
 import com.callsign.ticketly.entity.Delivery;
 import com.callsign.ticketly.service.DeliveryService;
+import com.callsign.ticketly.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -42,5 +42,11 @@ public class DeliveryController {
     ResponseEntity<BaseResponseDto<HashMap<String, String>>> patchDelivery(@RequestBody DeliveryPatchIn deliveryPatchIn) throws Exception{
         deliveryService.patchDelivery(deliveryPatchIn);
         return BaseResponseDto.success("updated successfully", Optional.empty());
+    }
+
+    @GetMapping
+    public @ResponseBody
+    ResponseEntity<BaseResponseDto<Delivery>> getDelivery(@RequestParam("id") String deliveryID) throws Exception {
+        return BaseResponseDto.success("success", Optional.of(deliveryService.getDelivery(deliveryID)));
     }
 }
