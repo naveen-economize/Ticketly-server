@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -36,6 +37,7 @@ public class DeliveryService {
     private int counter = 0;
 
     public Delivery getDelivery(String deliveryID) throws Exception {
+        List<Delivery> deliveries = deliveryRepository.getExpiredDeliveries(LocalDateTime.now());
         Optional<Delivery> deliveryOptional = deliveryRepository.findById(deliveryID);
         if(deliveryOptional.isEmpty()) {
             throw new IllegalArgumentException("Invalid deliveryID");

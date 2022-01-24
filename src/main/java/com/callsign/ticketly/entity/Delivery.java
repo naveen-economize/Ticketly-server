@@ -3,6 +3,7 @@ package com.callsign.ticketly.entity;
 import com.callsign.ticketly.constants.DeliveryStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -36,6 +37,7 @@ public class Delivery implements Serializable {
     @ManyToOne
     @JoinColumn(name = "restaurant_id", insertable = false, updatable=false)
     private Restaurant restaurant;
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id", insertable = false, updatable=false)
     private Ticket ticket;
