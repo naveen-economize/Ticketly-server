@@ -14,6 +14,7 @@ import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.integration.redis.util.RedisLockRegistry;
@@ -78,5 +79,10 @@ public class RedisConfiguration {
     @Bean
     public ListOperations<String, Object> listOperations(RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForList();
+    }
+
+    @Bean
+    public ValueOperations<String, Object> valueOperations(RedisTemplate<String, Object> redisTemplate) {
+        return redisTemplate.opsForValue();
     }
 }
