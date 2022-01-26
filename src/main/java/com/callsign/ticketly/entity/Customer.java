@@ -1,6 +1,7 @@
 package com.callsign.ticketly.entity;
 
 import com.callsign.ticketly.constants.CustomerType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -23,6 +24,13 @@ public class Customer implements Serializable {
     private String name;
     @Column(name = "phone_number")
     private String phoneNumber;
+    @Column(nullable = false, unique = true)
+    private String email;
+    @Column(nullable = false)
+    private String password;
+    @Column(name = "jwt_token")
+    @JsonIgnore
+    private String jwtToken;
 
     public Customer() {}
 
