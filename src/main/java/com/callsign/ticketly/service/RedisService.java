@@ -37,8 +37,8 @@ public class RedisService {
         lock.unlock();
     }
 
-    public void setValue(String key, Object value) {
-        valueOperations.set(key, value, 5000, TimeUnit.MILLISECONDS);
+    public void setValue(String key, Object value, long expiry) {
+        valueOperations.set(key, value, expiry, TimeUnit.MILLISECONDS);
     }
 
     public Object getValue(String key) {

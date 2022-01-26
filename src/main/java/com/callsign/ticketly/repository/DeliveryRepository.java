@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface DeliveryRepository extends CrudRepository<Delivery, String> {
     // select * from delivery where delivery_status != '3' and expected_delivery_time < time.now();
-    @Query("SELECT d FROM Delivery d where d.deliveryStatus != 'delivered' and d.expectedDeliveryTime < ?1")
+    @Query("SELECT d FROM Delivery d where d.deliveryStatus != '3' and d.expectedDeliveryTime < ?1")
     List<Delivery> getExpiredDeliveries(LocalDateTime time);
 }

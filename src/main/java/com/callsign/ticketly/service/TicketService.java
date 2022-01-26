@@ -13,7 +13,9 @@ import com.callsign.ticketly.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class TicketService {
@@ -38,13 +40,17 @@ public class TicketService {
     }
 
     public void createTicketIfNeededForExpiredDeliveryTime(Delivery delivery) {
-        Ticket ticket = delivery.getTicket();
+        Optional<Ticket> ticketOptional = Optional.empty();
+        if(delivery.getTicketID() != null) {
+            ticketOptional = ticketRepository.findById(delivery.getTicketID());
+        }
         Customer customer = delivery.getCustomer();
         TicketPriority ticketPriority = customer.getCustomerType().getHighPriority();
         int weight = ticketPriority.getWeight();
-        if(ticket == null) {
+        if(ticketOptional.isEmpty()) {
             handleTicketCreation(delivery, ticketPriority, weight);
         } else {
+            Ticket ticket = ticketOptional.get();
             ticket.setTicketStatus(TicketStatus.open);
             ticket.setUpdatedAt(LocalDateTime.now());
             ticket.setTicketPriority(ticketPriority);

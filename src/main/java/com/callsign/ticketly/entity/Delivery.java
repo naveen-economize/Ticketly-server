@@ -22,13 +22,10 @@ public class Delivery implements Serializable {
     private LocalDateTime expectedDeliveryTime;
     @Column(name = "current_distance_from_destination_metres")
     private Integer currentDistanceFromDestinationInMetres;
-    @JsonIgnore
     @Column(name = "customer_id", nullable = false)
     private String customerID;
-    @JsonIgnore
     @Column(name = "restaurant_id", nullable = false)
     private String restaurantID;
-    @JsonIgnore
     @Column(name = "ticket_id")
     private String ticketID;
     @ManyToOne
