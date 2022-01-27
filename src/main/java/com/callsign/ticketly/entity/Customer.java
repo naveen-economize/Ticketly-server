@@ -1,6 +1,8 @@
 package com.callsign.ticketly.entity;
 
 import com.callsign.ticketly.constants.CustomerType;
+import com.callsign.ticketly.dto.CustomerIn;
+import com.callsign.ticketly.dto.CustomerLoginOut;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
@@ -33,6 +35,27 @@ public class Customer implements Serializable {
     private String jwtToken;
 
     public Customer() {}
+
+    public static Customer getCustomer(CustomerIn customerIn) {
+        Customer customer = new Customer();
+        customer.setCustomerType(customerIn.getCustomerType());
+        customer.setEmail(customerIn.getEmail());
+        customer.setPassword(customerIn.getPassword());
+        customer.setName(customerIn.getName());
+        customer.setPhoneNumber(customerIn.getPhoneNumber());
+        return customer;
+    }
+
+    public CustomerLoginOut getCustomerLoginOut(String jwtToken) {
+        CustomerLoginOut customerLoginOut = new CustomerLoginOut();
+        customerLoginOut.setCustomerType(this.getCustomerType());
+        customerLoginOut.setEmail(this.getEmail());
+        customerLoginOut.setName(this.getName());
+        customerLoginOut.setPhoneNumber(this.getPhoneNumber());
+        customerLoginOut.setJwtToken(jwtToken);
+        customerLoginOut.setId(this.getId());
+        return customerLoginOut;
+    }
 
     public Customer(String customerID) {
         this.id = customerID;

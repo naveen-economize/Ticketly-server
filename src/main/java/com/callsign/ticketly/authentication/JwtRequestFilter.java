@@ -1,6 +1,6 @@
 package com.callsign.ticketly.authentication;
 
-import com.callsign.ticketly.service.CustomerService;
+import com.callsign.ticketly.service.CustomerCustomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +22,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private JwtTokenUtility jwtTokenUtility;
 
     @Autowired
-    private CustomerService userDetailsServiceCustom;
+    private CustomerCustomService userDetailsServiceCustom;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain chain) throws ServletException, IOException

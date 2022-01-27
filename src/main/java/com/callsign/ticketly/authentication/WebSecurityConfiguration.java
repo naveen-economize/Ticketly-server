@@ -1,5 +1,6 @@
 package com.callsign.ticketly.authentication;
 
+import com.callsign.ticketly.service.CustomerCustomService;
 import com.callsign.ticketly.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +32,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private JwtRequestFilter jwtRequestFilter;
 
     @Autowired
-    private CustomerService userDetailsServiceCustom;
+    private CustomerCustomService userDetailsServiceCustom;
+
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
 
     private String[] publicURL = new String[]{
             "/api/v1/login", "/api/v1/signup",
@@ -39,12 +43,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsServiceCustom).passwordEncoder(passwordEncoder());
-    }
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        auth.userDetailsService(userDetailsServiceCustom).passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -68,7 +67,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf().disable()
-                .authorizeRequests().antMatchers("/**").permitAll()
+                .authorizeRequests().antMatchers(publicURL).permitAll()
                 .anyRequest().authenticated()
                 .and().cors().and().exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()

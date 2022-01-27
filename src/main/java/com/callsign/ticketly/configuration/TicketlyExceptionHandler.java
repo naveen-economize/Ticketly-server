@@ -4,6 +4,7 @@ import com.callsign.ticketly.dto.ExceptionResponseDTO;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,6 +39,15 @@ public class TicketlyExceptionHandler {
     {
         ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO();
         exceptionResponseDTO.setHttpStatus(HttpStatus.BAD_REQUEST);
+        exceptionResponseDTO.setMessage(e.getMessage());
+        return new ResponseEntity<>(exceptionResponseDTO, exceptionResponseDTO.getHttpStatus());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public @ResponseBody ResponseEntity<ExceptionResponseDTO> badCredentialsException(BadCredentialsException e)
+    {
+        ExceptionResponseDTO exceptionResponseDTO = new ExceptionResponseDTO();
+        exceptionResponseDTO.setHttpStatus(HttpStatus.UNAUTHORIZED);
         exceptionResponseDTO.setMessage(e.getMessage());
         return new ResponseEntity<>(exceptionResponseDTO, exceptionResponseDTO.getHttpStatus());
     }
