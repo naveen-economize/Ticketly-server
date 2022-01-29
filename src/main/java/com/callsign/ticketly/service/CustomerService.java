@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -43,11 +44,13 @@ public class CustomerService{
             throw new IllegalArgumentException("Email already exists");
         }
         Customer customer = Customer.getCustomer(customerIn);
+        String encodedPassword = new BCryptPasswordEncoder().encode(customerIn.getPassword());
+        customer.setPassword(encodedPassword);
         return customerRepository.save(customer);
     }
 
     public CustomerLoginOut userLogin(CustomerLoginIn customerLoginIn) throws Exception {
-        //authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(customerLoginIn.getEmail(), customerLoginIn.getPassword()));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(customerLoginIn.getEmail(), customerLoginIn.getPassword()));
         Customer customer = customerRepository.findByEmail(customerLoginIn.getEmail());
         if(customer == null) {
             throw new UsernameNotFoundException(customerLoginIn.getEmail());
