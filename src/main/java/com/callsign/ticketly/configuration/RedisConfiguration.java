@@ -39,6 +39,9 @@ public class RedisConfiguration {
     @Value("${redis.lock}")
     private String lock;
 
+    @Value("${redis.timeout}")
+    private Integer timeout;
+
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
@@ -48,7 +51,7 @@ public class RedisConfiguration {
         redisStandaloneConfiguration.setPassword(RedisPassword.of(password));
 
         JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfigurationBuilder = JedisClientConfiguration.builder();
-        jedisClientConfigurationBuilder.connectTimeout(Duration.ofSeconds(60));
+        jedisClientConfigurationBuilder.connectTimeout(Duration.ofSeconds(timeout));
 
         return new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfigurationBuilder.build());
     }

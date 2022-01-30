@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -104,6 +105,16 @@ public class TicketService {
         ticket.setTicketPriority(ticketPriority);
         ticket.setWeights(weight);
         return ticketRepository.save(ticket);
+    }
+
+    public List<Ticket> searchTickets(List<TicketStatus> ticketStatusList){
+        if(ticketStatusList.size() == 0) {
+            ticketStatusList.add(TicketStatus.open);
+            ticketStatusList.add(TicketStatus.ack);
+            ticketStatusList.add(TicketStatus.closed);
+            ticketStatusList.add(TicketStatus.resolved);
+        }
+        return ticketRepository.searchTickets(ticketStatusList);
     }
 
 }

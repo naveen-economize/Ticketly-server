@@ -28,6 +28,7 @@ public class Customer implements Serializable {
     private String phoneNumber;
     @Column(nullable = false, unique = true)
     private String email;
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
     @Column(name = "jwt_token")
